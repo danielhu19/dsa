@@ -1,4 +1,4 @@
 # dsc
 
-Implement data structures in C
+## Implement data structures in C
 
