@@ -3,10 +3,14 @@
 #define LINEARLIST_H_
 
 // https://stackoverflow.com/questions/1921539/using-boolean-values-in-c
+// https://pubs.opengroup.org/onlinepubs/009695399/basedefs/stdbool.h.html
 #include <stdbool.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+// https://stackoverflow.com/questions/822323/how-to-generate-a-random-int-in-c/39475626#39475626
+#include <time.h>
 
 #define Status int 
+#define FALSE -1
 #define ElemType int 
 
 #define LIST_INIT_SIZE 100
@@ -22,8 +26,12 @@ typedef struct LNode{
 	struct LNode *next;
 }LNode, *LinkList;
 
+#define HANDLE_NULL(X) \
+	if(!X) exit(FALSE);
+
 // SqList
 Status init_sq(SqList *L);
+Status destory_sq(SqList *L); 
 Status create_sq(SqList *L);
 Status insert_sq(SqList *L, int i, ElemType e);
 Status delete_sq(SqList *L, int i, ElemType *e);
