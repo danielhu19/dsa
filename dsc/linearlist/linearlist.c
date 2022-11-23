@@ -1,73 +1,150 @@
 #include "linearlist.h"
 
 /*
- * Initilize a NULL sequence list
+ * Initialize a NULL sequence list
  * L: pointer which points to SqList
  * */
-Status init_sq(SqList *L){
-	L->elem = (ElemType *)malloc(LIST_INIT_SIZE * sizeof(ElemType));
-	HANDLE_NULL(L->elem);
-	L->length = LIST_INIT_SIZE;
-	L->listsize = 0;
-	return true;
+Status init_sq(SqList *L) {
+  L->elem = (ElemType *)malloc(LIST_INIT_SIZE * sizeof(ElemType));
+  assert(L->elem);
+  L->length = 0;
+  L->listsize = LIST_INIT_SIZE;
+  return EXIT_SUCCESS;
 }
 
 // Destory a linear list
-Status destory_sq(SqList *L){
-	free(L->elem);
-	L->elem = NULL;
-	L->length = 0;
-	L->listsize = 0;
-	return true;
+Status destory_sq(SqList *L) {
+  free(L->elem);
+  L->elem = NULL;
+  L->length = 0;
+  L->listsize = 0;
+  return EXIT_SUCCESS;
 }
 
 // Create a linear with random number
-Status create_sq(SqList *L){
-	// Initialization, should only be called once.
-	// https://stackoverflow.com/questions/7343833/srand-why-call-it-only-once/
-	int len = 5; /* choose one you like */
-	srand(time(NULL));
-	for(int i = 0; i < len; ++i){ 
-		int r = rand();
-		L->elem[i] = r;
-		++L->length;
-		++L->listsize;
-	}
-	return true;
+Status create_sq(SqList *L) {
+  // Initialization, should only be called once.
+  int len = 5; /* choose one you like */
+  // https://stackoverflow.com/questions/7343833/srand-why-call-it-only-once/
+  srand(time(0));
+  for (int i = 0; i < len; ++i) {
+    int r = rand();
+    L->elem[i] = r;
+    ++L->length;
+    ++L->listsize;
+  }
+  return EXIT_SUCCESS;
 }
 
-/* 
- * Insert 'e' into the 'i'th of L
- * e: element to insert
- * i: index of inserting
- * */
-Status insert_sq(SqList *L, int i, ElemType e){
-	// check if 0 <= i <= length + 1 
-	if(i < 0 || i > length + 1) exit(FALSE);
-	// check if overflow
-	if(L->length = L->listsize){
-		ElemType *newbase = (ElemType *)relloac(L->elem,(LIST_INIT_SIZE + LISTINCREMENT) * sizeof(ElemType));
-		HANDLE_NULL(newbase);
-		L->elem = newbase;
-		L->listsize += LISTINCREMENT;
-	}
+/**
+ * @brief Insert 'e' into the 'i'th of L
+ *
+ * @param L ptr points to the pointer of SqList
+ * @param i index of inserting
+ * @param e element to insert
+ * @return Status
+ */
+Status insert_sq(SqList *L, int i, ElemType e) {
+  assert(L);
+  /* 0 <= i <= length + 1 */
+  assert(i >= 0 && i < L->length + 1);
+  /* reallocate if overflow */
+  if (L->length == L->listsize) {
+    ElemType *newbase = (ElemType *)realloc(
+        L->elem, (LIST_INIT_SIZE + LISTINCREMENT) * sizeof(ElemType));
+    assert(newbase);
+    L->elem = newbase;
+    L->listsize += LISTINCREMENT;
+  }
 
-	int *ptr = &(L->elem[i]), *end = &(L->elem[L->length - 1]);	
-	while(end >= ptr){
-		*(end + 1) = *end;
-		--end;
-	}
-	free(end);
-	*ptr = e;
-	++L->length;
-	return true;	
+  int *ptr = &(L->elem[i]), *end = &(L->elem[L->length - 1]);
+  while (end > ptr) {
+    *(end + 1) = *end;
+    --end;
+  }
+  *(end + 1) = *end;
+  /**
+   * Note for free(): https://en.cppreference.com/w/c/memory/free
+   * The behavior is undefined if the value of ptr does not equal a value
+   * returned earlier by malloc(), calloc(), realloc(), or aligned_alloc()
+   */
+  // free(end);
+  *ptr = e;
+  ++L->length;
+  return EXIT_SUCCESS;
 }
 
-Status delete_sq(SqList *L, int i, ElemType *e){}
-Status locate_sq(SqList *L, ElemType e, Status(*compare)(ElemType, ElemType), int *index){}
-Status search_sq(SqList *L, int i, ElemType *e){}
+/**
+ * @brief Delete the 'i'th element in SqList, return to e
+ *
+ * @param L
+ * @param i index of deleting
+ * @param e element to delete
+ * @return Status
+ */
+Status delete_sq(SqList *L, int i, ElemType *e) {
+  assert(L);
+  assert(i >= 0 && i < L->length);
+  *e = L->elem[i];
+  ElemType *ptr = &(L->elem[i]), *end = &(L->elem[L->length - 1]);
+  while (ptr < end) {
+    *ptr = *(ptr + 1);
+    ptr++;
+  }
+  L->length--;
+  return EXIT_SUCCESS;
+}
 
+Status compare(ElemType x, ElemType y) { return x == y; }
 
-void print_sq(SqList *L){} 
-Status mergelist_sq(SqList *A, SqList *B, SqList *C){}
-Status union_sq(SqList *A, SqList *B){}
+/**
+ * @brief Locate an element by given value, return its index(1st) to 'index'
+ *
+ * @param L
+ * @param e given value to find
+ * @param compare function pointer
+ * @param index return index of element which equals to e
+ * @return Status
+ */
+Status locate_sq(SqList *L, ElemType e, Status (*compare)(ElemType, ElemType),
+                 int *index) {
+  assert(L);
+  bool flag;
+  for (int i = 0; i < L->length; i++) {
+    if (compare(L->elem[i], e)) {
+      printf("Found %d in %d", e, i);
+      *index = i;
+      flag = true;
+    }
+  }
+  if (flag)
+    return EXIT_SUCCESS;
+  else {
+    printf("NOT FOUND!");
+    return EXIT_SUCCESS;
+  }
+}
+
+/**
+ * @brief Search element by given index, return value to e
+ *
+ * @param L
+ * @param i given index
+ * @param e receiver
+ * @return Status
+ */
+Status search_sq(SqList *L, int i, ElemType *e) {
+  assert(L);
+  assert(i >= 0 && i <= L->length);
+  *e = L->elem[i];
+  return EXIT_SUCCESS;
+}
+
+// print the SqList
+void print_sq(SqList *L) {
+  assert(L);
+  for (int i = 0; i < L->length; ++i) printf("%d ", L->elem[i]);
+  printf("\n");
+}
+Status mergelist_sq(SqList *A, SqList *B, SqList *C) {}
+Status union_sq(SqList *A, SqList *B) {}
