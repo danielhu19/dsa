@@ -1,5 +1,6 @@
 #include "linearlist.h"
 
+/* ****************** SqList ****************** */
 /*
  * Initialize a NULL sequence list
  * L: pointer which points to SqList
@@ -146,5 +147,85 @@ void print_sq(SqList *L) {
   for (int i = 0; i < L->length; ++i) printf("%d ", L->elem[i]);
   printf("\n");
 }
+
 Status mergelist_sq(SqList *A, SqList *B, SqList *C) {}
 Status union_sq(SqList *A, SqList *B) {}
+
+/* ****************** SingleLinkedList ****************** */
+
+/**
+ * @brief Construct a NULL SingleLinkedList
+ *
+ * @param L Head Pointer
+ * @return status
+ */
+Status init_lk(LinkList *L) {
+  *L = (LinkList)malloc(sizeof(LNode));
+  assert(*L);
+  (*L)->next = NULL;
+  return EXIT_SUCCESS;
+}
+
+Status destory_lk(LinkList *L) {
+  assert(*L);
+  LinkList *q;
+  while (*L) {
+    *q = (*L)->next;
+    free(*L);
+    *L = *q;
+  }
+  return EXIT_SUCCESS;
+}
+
+/**
+ * @brief Create a SingleLinkedList which contains 5 LNodes
+ * Inverse Order!
+ * @param L
+ * @return Status
+ */
+// Status create_lk(LinkList *L) {
+//   assert(*L);
+//   int length = 5;
+//   srand(time(0));
+//   for (int i = length; i > 0; i--) {
+//     LinkList new = (LinkList)malloc(sizeof(LNode));
+//     assert(new);
+//     new->data = rand();
+//     new->next = (*L)->next;
+//     (*L)->next = new;
+//   }
+//   return EXIT_SUCCESS;
+// }
+
+
+/**
+ * @brief Create a SingleLinkedList which contains 5 LNodes
+ * Seriate Order!
+ * @param L
+ * @return Status
+ */
+Status create_lk(LinkList *L) {
+  assert(*L);
+  int length = 5;
+  srand(time(0));
+  LinkList end = *L;
+  for (int i = 0; i < length; i++) {
+    LinkList new = (LinkList)malloc(sizeof(LNode));
+    assert(new);
+    new->data = rand();
+    new->next = NULL;
+    end->next = new;
+    end = end->next;
+  }
+  return EXIT_SUCCESS;
+}
+
+void print_lk(LinkList *L) {
+  assert(*L);
+  LinkList *ptr = L;
+  while ((*ptr)->next) {
+    printf("%d ", (*ptr)->next->data);
+    *ptr = (*ptr)->next;
+  }
+  printf("\n");
+}

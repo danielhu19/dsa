@@ -43,5 +43,17 @@ Status mergelist_sq(SqList *A, SqList *B, SqList *C);
 Status union_sq(SqList *A, SqList *B);
 
 // LinkedLIst
+void print_lk(LinkList *L);
+Status init_lk(LinkList *L);
+Status destory_lk(LinkList *L);
+Status create_lk(LinkList *L);
+Status insert_lk(LinkList *L, int i, ElemType e);
+Status delete_lk(LinkList *L, int i, ElemType *e);
+Status locate_lk(LinkList *L, ElemType e, Status (*compare)(ElemType, ElemType),
+                 int *index);
+Status search_lk(LinkList *L, int i, ElemType *e);
+
+Status mergelist_lk(LinkList *A, LinkList *B, LinkList *C);
+Status union_lk(LinkList *A, LinkList *B);
 
 #endif
