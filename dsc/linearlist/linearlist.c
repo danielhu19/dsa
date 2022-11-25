@@ -148,9 +148,6 @@ void print_sq(SqList *L) {
   printf("\n");
 }
 
-Status mergelist_sq(SqList *A, SqList *B, SqList *C) {}
-Status union_sq(SqList *A, SqList *B) {}
-
 /* ****************** SingleLinkedList ****************** */
 
 /**
@@ -168,7 +165,7 @@ Status init_lk(LinkList *L) {
 
 Status destory_lk(LinkList *L) {
   assert(*L);
-  LinkList *q;
+  LinkList *q = NULL;
   while (*L) {
     *q = (*L)->next;
     free(*L);
