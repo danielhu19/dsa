@@ -17,6 +17,7 @@
 
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT 10
+
 typedef struct {
   ElemType *elem;
   int length;
@@ -28,6 +29,7 @@ typedef struct LNode {
   struct LNode *next;
 } LNode, *LinkList;
 
+extern Status compare(ElemType, ElemType);
 // SqList
 void print_sq(SqList *L);
 Status init_sq(SqList *L);
@@ -52,6 +54,7 @@ Status delete_lk(LinkList *L, int i, ElemType *e);
 Status locate_lk(LinkList *L, ElemType e, Status (*compare)(ElemType, ElemType),
                  int *index);
 Status search_lk(LinkList *L, int i, ElemType *e);
+int GetLen(LinkList *L);
 
 Status mergelist_lk(LinkList *A, LinkList *B, LinkList *C);
 Status union_lk(LinkList *A, LinkList *B);

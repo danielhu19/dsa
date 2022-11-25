@@ -197,7 +197,6 @@ Status destory_lk(LinkList *L) {
 //   return EXIT_SUCCESS;
 // }
 
-
 /**
  * @brief Create a SingleLinkedList which contains 5 LNodes
  * Seriate Order!
@@ -225,7 +224,112 @@ void print_lk(LinkList *L) {
   LinkList *ptr = L;
   while ((*ptr)->next) {
     printf("%d ", (*ptr)->next->data);
-    *ptr = (*ptr)->next;
+    ptr = &((*ptr)->next);  // not human readable hahahahahaha
   }
   printf("\n");
+}
+
+/* return the length of sg linked list */
+int GetLen(LinkList *L) {
+  int len = 0;
+  assert(*L);
+  LinkList *ptr = L;
+  while ((*ptr)->next) {
+    ++len;
+    ptr = &((*ptr)->next);
+  }
+  return len;
+}
+
+/**
+ * @brief Insert a LNode before the 'i'th of SingleLinkedList
+ *
+ * @param L
+ * @param i index to insert
+ * @param e value to insert
+ * @return Status
+ */
+Status insert_lk(LinkList *L, int i, ElemType e) {
+  assert(*L);
+  assert(i >= 1 && i <= GetLen(L) + 1);
+  LinkList new = (LinkList)malloc(sizeof(LNode));
+  assert(new);
+  new->data = e;
+  LinkList ptr = *L;
+  for (int j = 0; j < i - 1; j++) ptr = ptr->next;  // find the 'i-1'the LNode
+  new->next = (*ptr).next;
+  (*ptr).next = new;
+  return EXIT_SUCCESS;
+}
+
+/**
+ * @brief  Delete the 'i'th LNode
+ *
+ * @param L
+ * @param i index to delete
+ * @param e receiver
+ * @return Status
+ */
+Status delete_lk(LinkList *L, int i, ElemType *e) {
+  assert(*L);
+  assert(i >= 1 && i <= GetLen(L));
+  int j = 0;
+  LinkList p = *L;
+  // find the 'i-1'the LNode
+  while (p->next && j < i - 1) {
+    p = p->next;
+    j++;
+  }
+  LinkList q = p->next;
+  p->next = q->next;
+  q->next = NULL;
+  *e = q->data;
+  free(q);
+  return EXIT_SUCCESS;
+}
+
+/**
+ * @brief Locate the index of given element 'e'
+ *
+ * @param L
+ * @param e given element
+ * @param compare function pointer
+ * @param index receiver
+ * @return Status
+ */
+Status locate_lk(LinkList *L, ElemType e, Status compare(ElemType, ElemType),
+                 int *index) {
+  assert(*L);
+  LinkList ptr = (*L)->next;
+  int i = 0;
+  while (ptr) {
+    i++;
+    if (compare(e, ptr->data)) {
+      *index = i;
+      return EXIT_SUCCESS;
+    }
+    ptr = ptr->next;
+  }
+  printf("Not Found!\n");
+  return EXIT_FAILURE;
+}
+
+/**
+ * @brief Search element of the 'i'th index, return to e
+ *
+ * @param L
+ * @param i index to search
+ * @param e receiver
+ * @return Status
+ */
+Status search_lk(LinkList *L, int i, ElemType *e) {
+  assert(*L);
+  assert(i >= 1 && i <= GetLen(L));
+  LinkList ptr = *L;
+  while (i) {
+    i--;
+    ptr = ptr->next;
+  }
+  *e = ptr->data;
+  return EXIT_SUCCESS;
 }
