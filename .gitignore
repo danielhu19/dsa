@@ -1,7 +1,8 @@
-.gdb_history
-.vscode/
 *       # 忽略一切文件
 !*/     # 除了目录
 !*.c    # .c
 !*.h    # ...
 !Makefile*
+cpp/*
+.vscode/
+a.out
